@@ -1,0 +1,98 @@
+# LINUX DOCKER CONTAINER DOCKERFILE
+
+#FROM ubuntu:20.04
+#FROM jrei/systemd-ubuntu	
+##FROM ubuntu:20.04
+##RUN mkdir /telemetry	
+##RUN apt-get update
+##RUN apt-get -y install wget systemctl
+#RUN apt-get -y install apt-transport-https 
+#RUN apt-get -y install software-properties-common
+#RUN wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb -P /telemetry
+#RUN dpkg -i /telemetry/packages-microsoft-prod.deb
+#RUN apt-get update
+#RUN apt-get -y install powershell
+##RUN wget https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/download/v0.34.0/otel-contrib-collector_0.34.0_amd64.deb -P /telemetry
+##RUN dpkg-deb -c /telemetry/otel-contrib-collector_0.34.0_amd64.deb > /telemetry/dependency.txt
+##RUN dpkg --install /telemetry/otel-contrib-collector_0.34.0_amd64.deb
+##COPY custom.config.yaml /etc/otel-contrib-collector
+##RUN apt-get -y install  net-tools telnet
+#RUN mv /etc/otel-collector/custom.config.yaml /etc/otel-collector/config.yaml
+#WORKDIR /etc/otel
+##EXPOSE 4317 4318 55680 55679
+#ENTRYPOINT ["/telemetry/otelcontribcol_linux_amd64"]
+##ENTRYPOINT ["/usr/bin/otelcontribcol"]
+##CMD ["--config", "/etc/otel-contrib-collector/custom.config.yaml"]
+#RUN GRPC_HEALTH_PROBE_VERSION=v0.3.1 && \
+#    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/   #${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+#    chmod +x /bin/grpc_health_probe
+#HEALTHCHECK CMD curl --fail http://localhost:4317/health || exit	
+
+
+
+# LINUX DOCKER CONTAINER DOCKERFILE
+	
+FROM ubuntu:20.04
+RUN mkdir /telemetry	
+RUN apt-get update
+RUN apt-get -y install wget systemctl
+RUN wget https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/download/v0.40.0/otel-contrib-collector_0.40.0_amd64.deb -P /telemetry
+RUN dpkg-deb -c /telemetry/otel-contrib-collector_0.40.0_amd64.deb > /telemetry/dependency.txt
+RUN dpkg --install /telemetry/otel-contrib-collector_0.40.0_amd64.deb
+COPY custom.config.yaml /etc/otel-contrib-collector
+RUN apt-get -y install  net-tools telnet
+EXPOSE 4317 4318 55680 55679
+ENTRYPOINT ["/usr/bin/otelcontribcol"]
+CMD ["--config", "/etc/otel-contrib-collector/custom.config.yaml"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#FROM alpine:3.13 as certs
+#RUN apk --update add ca-certificates
+#FROM alpine:3.13 AS otelcol
+#RUN mkdir /etc/otel
+#COPY otelcol /
+#COPY default-config.yaml /etc/otel/config.yaml
+#RUN chmod 755 /etc/otel/config.yaml
+#RUN chmod 755 /otelcol
+#FROM scratch
+#ARG USER_UID=10001
+#USER ${USER_UID}
+#COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+#COPY --from=otelcol /otelcol /
+#COPY custom.config.yaml /etc/otel/config.yaml
+#ENTRYPOINT ["/otelcol"]
+#CMD ["--config", "/etc/otel/config.yaml"]
+#EXPOSE 4317 4318 55680 55679
+
+
+
+
+
+
+
+
+
+
+
+
+
+

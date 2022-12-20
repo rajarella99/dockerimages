@@ -1,0 +1,53 @@
+# receivers working correctly 
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+        
+processors:
+  batch:
+    send_batch_size: 1024
+    timeout: 5s
+
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 100
+    expected_new_traces_per_sec: 10
+    policies:
+      [
+        {
+          name: test-policy-1,
+          type: rate_limiting,
+          Rate_limiting: {spans_per_second: 35}
+        }
+      ]
+
+  memory_limiter:
+    limit_mib: 1500
+    spike_limit_mib: 512
+    check_interval: 5s
+
+extensions:
+  health_check: {}
+
+  
+exporters:
+  otlphttp:
+    endpoint: https://dockerpipelineimage.azurewebsites.net
+    # tls:
+      # ca_file: ca-cert.pem
+    headers:
+      authorization: Basic YWRtaW46YWRtaW1=      
+   
+
+  logging:
+    loglevel: debug
+
+service:
+  extensions: [health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch, tail_sampling, memory_limiter]
+      exporters: [otlphttp]

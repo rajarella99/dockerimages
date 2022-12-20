@@ -1,0 +1,12 @@
+## WINDOWS DOCKERFILE for OPENTELEMETRY DOCKER image and Windows Containers ##
+FROM mcr.microsoft.com/windows/servercore/iis:windowsservercore-20H2
+RUN mkdir c:\telemetry
+COPY telemetry-main.ps1 c:/telemetry
+COPY custom.config.yaml c:/telemetry
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Continue'; $ProgressPreference = 'SilentlyContinue';"]
+WORKDIR C:\\telemetry
+RUN Install-WindowsFeature telnet-client
+RUN  powershell.exe -NoProfile -Command C:\\telemetry\\telemetry-main.ps1
+EXPOSE 4317 4318 55678 55679
+
+##+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++##

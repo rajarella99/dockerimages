@@ -1,0 +1,14 @@
+FROM debian:10
+LABEL maintainer="rajashaker.arella@wolterskluwer.com"
+RUN mkdir /telemetry	
+RUN apt-get update
+RUN apt-get -y install procps apt-utils wget procps libcap2-bin
+RUN wget https://github.com/open-telemetry/opentelemetry-collector-contrib/releases/download/v0.42.0/otel-contrib-collector_0.42.0_amd64.deb -P /telemetry
+RUN dpkg-deb -c /telemetry/otel-contrib-collector_0.42.0_amd64.deb > /telemetry/dependency.txt
+RUN dpkg --install /telemetry/otel-contrib-collector_0.42.0_amd64.deb
+RUN rm -rf /telemetry/otel-contrib-collector_0.42.0_amd64.deb
+COPY custom.config.yaml /etc/otel-contrib-collector
+RUN apt-get -y install  net-tools telnet
+EXPOSE 80 4317 4318 55680 55679 13133
+ENTRYPOINT ["/usr/bin/otelcontribcol"]
+CMD ["--config", "/etc/otel-contrib-collector/custom.config.yaml"]

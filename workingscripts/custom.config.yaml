@@ -1,0 +1,48 @@
+extensions:
+  health_check: {}
+
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+    send_batch_size: 1024
+    timeout: 5s
+
+exporters:
+  datadog:
+    hostname: ####
+    api:
+      key: "cfca7cea68306a3aa517d70ea2f1bb1b"
+    service: "axcess.otel.instrumentation"
+    version: "0.40.0"     
+  logging:
+    logLevel: debug
+
+#extensions:
+#  health_check:
+#    endpoint: "linuxoteltest.azurewebsites.net:443"
+#    path: "/healthcheck"
+
+extensions:
+  health_check:
+    port: 80
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [datadog, logging]
+  extensions: [health_check]      
+    #metrics:
+      #receivers: [otlp, opencensus, prometheus]
+      #processors: [batch]
+      #exporters: [logging]
+
+ 
+  

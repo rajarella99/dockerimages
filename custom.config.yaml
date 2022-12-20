@@ -1,0 +1,72 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+        auth:
+          authenticator: basicauth
+      
+processors:
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 5000
+    expected_new_traces_per_sec: 1000
+    policies:
+      [
+        {
+          name: policy-1,
+          type: string_attribute,
+          string_attribute: {key: LoggedSeverity, values: [Error*,ERROR*], enabled_regex_matching: true, cache_max_size: 1000}
+        },
+        {
+          name: policy-2,
+          type: numeric_attribute,
+          numeric_attribute: {key: http.status_code, min_value: 300, max_value: 900}
+        },
+        {
+          name: policy-3,
+          type: latency,
+          latency: {threshold_ms: 1}
+        }
+      ]
+  batch:
+    send_batch_size: 1024
+    timeout: 5s
+
+exporters:
+  datadog:
+    hostname: ####
+    api:
+      key: "cfca7cea68306a3aa517d70ea2f1bb1b"    
+    env: "Upstream-Client-Caas"
+    service: "axcess.otel.instrumentation"
+    version: "0.43.0"     
+  logging:
+    logLevel: debug
+
+#extensions:
+#  health_check:
+#    endpoint: "linuxoteltest.azurewebsites.net:443"
+#    path: "/healthcheck"
+
+extensions:
+  health_check:
+    port: 13133
+  basicauth:
+    htpasswd:
+      file: /telemetry/basicauth.source
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [datadog, logging]
+  extensions: [health_check, basicauth]      
+    #metrics:
+      #receivers: [otlp, opencensus, prometheus]
+      #processors: [batch]
+      #exporters: [logging]
+
+ 
+  

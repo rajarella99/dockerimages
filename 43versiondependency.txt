@@ -1,0 +1,12 @@
+drwxr-xr-x root/root         0 2022-01-26 22:37 ./etc/
+drwxr-xr-x root/root         0 2022-01-26 22:37 ./etc/otelcol-contrib/
+-rw-r--r-- root/root       851 2022-01-26 22:03 ./etc/otelcol-contrib/config.yaml
+-rw-r--r-- root/root       246 2022-01-26 22:03 ./etc/otelcol-contrib/otelcol-contrib.conf
+drwxr-xr-x root/root         0 2022-01-26 22:37 ./lib/
+drwxr-xr-x root/root         0 2022-01-26 22:37 ./lib/systemd/
+drwxr-xr-x root/root         0 2022-01-26 22:37 ./lib/systemd/system/
+-rw-r--r-- root/root       326 2022-01-26 22:03 ./lib/systemd/system/otelcol-contrib.service
+drwxr-xr-x root/root         0 2022-01-26 22:37 ./usr/
+drwxr-xr-x root/root         0 2022-01-26 22:37 ./usr/local/
+drwxr-xr-x root/root         0 2022-01-26 22:37 ./usr/local/bin/
+-rwxr-xr-x root/root 120246272 2022-01-26 22:33 ./usr/local/bin/otelcol-contrib

@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "value": "ffed056e-0f97-4b1f-8c93-963008f53d3b"
+        },
+        "name": {
+            "value": "linuxfalls"
+        },
+        "location": {
+            "value": "Central US"
+        },
+        "hostingPlanName": {
+            "value": "blackforest01"
+        },
+        "serverFarmResourceGroup": {
+            "value": "marcos"
+        },
+        "alwaysOn": {
+            "value": true
+        },
+        "linuxFxVersion": {
+            "value": "DOCKER|wkmarcosyard.azurecr.io/linux/telemetry2:0.34.0"
+        },
+        "dockerRegistryUrl": {
+            "value": "https://wkmarcosyard.azurecr.io"
+        },
+        "dockerRegistryUsername": {
+            "value": "wkmarcosyard"
+        },
+        "dockerRegistryPassword": {
+            "value": "7=HsIghiXgZDuRSYiH4fRPIdxyLENQYF"
+        },
+        "dockerRegistryStartupCommand": {
+            "value": ""
+        }
+    }
+}

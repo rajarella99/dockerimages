@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "mercury"
+  labels:
+    name: "marcos"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otelcontribcollector
+  namespace: mercury
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: otelcontribcollector
+  template:
+    metadata:
+      labels:
+        app: otelcontribcollector
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: otelcontribcollector
+        image: wkmarcosyard.azurecr.io/linux/dockerwkmarcos:0.43.0-387380                  ##this is otelcontribcollector image##
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            cpu: 400m
+            memory: 512Mi
+        ports:
+        - containerPort: 13133
+          name: healthcheck
+        - containerPort: 4318
+          name: httpserver
+                 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otelcontribhealthservice
+  namespace: mercury
+spec:
+  type: ClusterIP
+  selector:
+    app: otelcontribcollector
+  ports:
+  - name: healthcheck
+    protocol: TCP  
+    port: 80  
+    targetPort: 13133
+ 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otelcontribwebservice
+  namespace: mercury
+spec:
+  type: ClusterIP
+  selector:
+    app: otelcontribcollector
+  ports:
+  - name: http
+    protocol: TCP  
+    port: 80  
+    targetPort: 4318   
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blackhorse
+  namespace: mercury
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/backend-path-prefix: "/"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /telemetry
+        backend:
+          service:
+            name: otelcontribhealthservice
+            port:
+              number: 80
+        pathType: Exact
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: whitehorse
+  namespace: mercury
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/backend-path-prefix: "/"    
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          service:
+            name: otelcontribwebservice
+            port:
+              number: 80
+        pathType: Exact

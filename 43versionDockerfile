@@ -1,0 +1,25 @@
+FROM debian:bullseye-slim
+LABEL maintainer="rajashaker.arella@wolterskluwer.com"
+LABEL description="This Dockerfile creates Otel Collector Contrib Aggregator Agent"
+RUN mkdir /telemetry
+ADD download.sh /telemetry
+WORKDIR /telemetry
+RUN apt-get update
+RUN apt-get -y install apt-utils wget telnet procps net-tools libcap2-bin
+RUN chmod +x /telemetry/download.sh
+RUN /bin/sh -c /telemetry/download.sh
+RUN dpkg-deb -c /telemetry/otel-contrib-collector_0.43.0_amd64.deb > /telemetry/dependency.txt
+RUN dpkg --install /telemetry/otel-contrib-collector_0.43.0_amd64.deb
+RUN rm -rf /telemetry/otel-contrib-collector_0.43.0_amd64.deb
+COPY custom.config.yaml /usr/local/bin
+COPY basicauth.source /usr/local/bin
+RUN apt-get -y install net-tools telnet
+EXPOSE 4317 4318 55680 55679 13133
+RUN setcap cap_net_bind_service=pie /usr/local/bin/otelcol-contrib
+RUN addgroup --group otelgroup && adduser oteluser && adduser oteluser otelgroup
+RUN chown -R oteluser:otelgroup /telemetry && chmod -R 755 /telemetry
+RUN chown -R oteluser:otelgroup /usr/local/bin/custom.config.yaml && chmod -R 755 /usr/local/bin/custom.config.yaml
+RUN chown -R oteluser:otelgroup /usr/local/bin/otelcol-contrib && chmod -R 755 /usr/local/bin/otelcol-contrib
+USER oteluser
+ENTRYPOINT ["/usr/local/bin/otelcol-contrib"]
+CMD ["--config", "/usr/local/bin/custom.config.yaml"]

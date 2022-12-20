@@ -1,0 +1,677 @@
+PS D:\Reposcripts\Otel_Aggregator_Terraform\terraform\aksbasecode\AGIC> terraform init -upgrade
+
+Initializing the backend...
+
+Initializing provider plugins...
+- Finding hashicorp/azurerm versions matching "~> 2.0"...
+- Finding latest version of hashicorp/random...
+- Using previously-installed hashicorp/azurerm v2.99.0
+- Using previously-installed hashicorp/random v3.1.2
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+PS D:\Reposcripts\Otel_Aggregator_Terraform\terraform\aksbasecode\AGIC> terraform apply
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # data.azurerm_subnet.appgwsubnet will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_subnet" "appgwsubnet"  {
+      + address_prefix                                 = (known after apply)
+      + address_prefixes                               = (known after apply)
+      + enforce_private_link_endpoint_network_policies = (known after apply)
+      + enforce_private_link_service_network_policies  = (known after apply)
+      + id                                             = (known after apply)
+      + name                                           = "appgwsubnet"
+      + network_security_group_id                      = (known after apply)
+      + resource_group_name                            = (known after apply)
+      + route_table_id                                 = (known after apply)
+      + service_endpoints                              = (known after apply)
+      + virtual_network_name                           = "aks-vnet-clustervnet"
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # data.azurerm_subnet.kubesubnet will be read during apply
+  # (config refers to values not yet known)
+ <= data "azurerm_subnet" "kubesubnet"  {
+      + address_prefix                                 = (known after apply)
+      + address_prefixes                               = (known after apply)
+      + enforce_private_link_endpoint_network_policies = (known after apply)
+      + enforce_private_link_service_network_policies  = (known after apply)
+      + id                                             = (known after apply)
+      + name                                           = "kubesubnet"
+      + network_security_group_id                      = (known after apply)
+      + resource_group_name                            = (known after apply)
+      + route_table_id                                 = (known after apply)
+      + service_endpoints                              = (known after apply)
+      + virtual_network_name                           = "aks-vnet-clustervnet"
+
+      + timeouts {
+          + read = (known after apply)
+        }
+    }
+
+  # azurerm_application_gateway.network will be created
+  + resource "azurerm_application_gateway" "network" {
+      + id                          = (known after apply)
+      + location                    = "centralus"
+      + name                        = "ApplicationGateway1"
+      + private_endpoint_connection = (known after apply)
+      + resource_group_name         = (known after apply)
+      + tags                        = {
+          + "source" = "terraform"
+        }
+
+      + backend_address_pool {
+          + id   = (known after apply)
+          + name = "aks-vnet-clustervnet-beap"
+        }
+
+      + backend_http_settings {
+          + cookie_based_affinity               = "Disabled"
+          + id                                  = (known after apply)
+          + name                                = "aks-vnet-clustervnet-be-htst"
+          + pick_host_name_from_backend_address = false
+          + port                                = 80
+          + probe_id                            = (known after apply)
+          + protocol                            = "Http"
+          + request_timeout                     = 1
+        }
+
+      + frontend_ip_configuration {
+          + id                            = (known after apply)
+          + name                          = "aks-vnet-clustervnet-feip"
+          + private_ip_address            = (known after apply)
+          + private_ip_address_allocation = (known after apply)
+          + private_link_configuration_id = (known after apply)
+          + public_ip_address_id          = (known after apply)
+          + subnet_id                     = (known after apply)
+        }
+
+      + frontend_port {
+          + id   = (known after apply)
+          + name = "aks-vnet-clustervnet-feport"
+          + port = 80
+        }
+      + frontend_port {
+          + id   = (known after apply)
+          + name = "httpsPort"
+          + port = 443
+        }
+
+      + gateway_ip_configuration {
+          + id        = (known after apply)
+          + name      = "appGatewayIpConfig"
+          + subnet_id = (known after apply)
+        }
+
+      + http_listener {
+          + frontend_ip_configuration_id   = (known after apply)
+          + frontend_ip_configuration_name = "aks-vnet-clustervnet-feip"
+          + frontend_port_id               = (known after apply)
+          + frontend_port_name             = "aks-vnet-clustervnet-feport"
+          + id                             = (known after apply)
+          + name                           = "aks-vnet-clustervnet-httplstn"
+          + protocol                       = "Http"
+          + ssl_certificate_id             = (known after apply)
+          + ssl_profile_id                 = (known after apply)
+        }
+
+      + request_routing_rule {
+          + backend_address_pool_id    = (known after apply)
+          + backend_address_pool_name  = "aks-vnet-clustervnet-beap"
+          + backend_http_settings_id   = (known after apply)
+          + backend_http_settings_name = "aks-vnet-clustervnet-be-htst"
+          + http_listener_id           = (known after apply)
+          + http_listener_name         = "aks-vnet-clustervnet-httplstn"
+          + id                         = (known after apply)
+          + name                       = "aks-vnet-clustervnet-rqrt"
+          + redirect_configuration_id  = (known after apply)
+          + rewrite_rule_set_id        = (known after apply)
+          + rule_type                  = "Basic"
+          + url_path_map_id            = (known after apply)
+        }
+
+      + sku {
+          + capacity = 2
+          + name     = "Standard_v2"
+          + tier     = "Standard_v2"
+        }
+
+      + ssl_policy {
+          + cipher_suites        = (known after apply)
+          + disabled_protocols   = (known after apply)
+          + min_protocol_version = (known after apply)
+          + policy_name          = (known after apply)
+          + policy_type          = (known after apply)
+        }
+    }
+
+  # azurerm_kubernetes_cluster.k8s will be created
+  + resource "azurerm_kubernetes_cluster" "k8s" {
+      + azure_policy_enabled                = (known after apply)
+      + dns_prefix                          = "telemetry"
+      + fqdn                                = (known after apply)
+      + http_application_routing_enabled    = false
+      + http_application_routing_zone_name  = (known after apply)
+      + id                                  = (known after apply)
+      + kube_admin_config                   = (known after apply)
+      + kube_admin_config_raw               = (sensitive value)
+      + kube_config                         = (known after apply)
+      + kube_config_raw                     = (sensitive value)
+      + kubernetes_version                  = (known after apply)
+      + location                            = "centralus"
+      + name                                = "marcos-agic-ingress"
+      + node_resource_group                 = (known after apply)
+      + open_service_mesh_enabled           = (known after apply)
+      + portal_fqdn                         = (known after apply)
+      + private_cluster_enabled             = (known after apply)
+      + private_cluster_public_fqdn_enabled = false
+      + private_dns_zone_id                 = (known after apply)
+      + private_fqdn                        = (known after apply)
+      + private_link_enabled                = (known after apply)
+      + public_network_access_enabled       = true
+      + resource_group_name                 = (known after apply)
+      + role_based_access_control_enabled   = (known after apply)
+      + sku_tier                            = "Free"
+      + tags                                = {
+          + "source" = "terraform"
+        }
+
+      + aci_connector_linux {
+          + subnet_name = (known after apply)
+        }
+
+      + addon_profile {
+          + aci_connector_linux {
+              + enabled     = (known after apply)
+              + subnet_name = (known after apply)
+            }
+
+          + azure_keyvault_secrets_provider {
+              + enabled                  = (known after apply)
+              + secret_identity          = (known after apply)
+              + secret_rotation_enabled  = (known after apply)
+              + secret_rotation_interval = (known after apply)
+            }
+
+          + azure_policy {
+              + enabled = (known after apply)
+            }
+
+          + http_application_routing {
+              + enabled                            = (known after apply)
+              + http_application_routing_zone_name = (known after apply)
+            }
+
+          + ingress_application_gateway {
+              + effective_gateway_id                 = (known after apply)
+              + enabled                              = (known after apply)
+              + gateway_id                           = (known after apply)
+              + gateway_name                         = (known after apply)
+              + ingress_application_gateway_identity = (known after apply)
+              + subnet_cidr                          = (known after apply)
+              + subnet_id                            = (known after apply)
+            }
+
+          + kube_dashboard {
+              + enabled = (known after apply)
+            }
+
+          + oms_agent {
+              + enabled                    = (known after apply)
+              + log_analytics_workspace_id = (known after apply)
+              + oms_agent_identity         = (known after apply)
+            }
+
+          + open_service_mesh {
+              + enabled = (known after apply)
+            }
+        }
+
+      + auto_scaler_profile {
+          + balance_similar_node_groups      = (known after apply)
+          + empty_bulk_delete_max            = (known after apply)
+          + expander                         = (known after apply)
+          + max_graceful_termination_sec     = (known after apply)
+          + max_node_provisioning_time       = (known after apply)
+          + max_unready_nodes                = (known after apply)
+          + max_unready_percentage           = (known after apply)
+          + new_pod_scale_up_delay           = (known after apply)
+          + scale_down_delay_after_add       = (known after apply)
+          + scale_down_delay_after_delete    = (known after apply)
+          + scale_down_delay_after_failure   = (known after apply)
+          + scale_down_unneeded              = (known after apply)
+          + scale_down_unready               = (known after apply)
+          + scale_down_utilization_threshold = (known after apply)
+          + scan_interval                    = (known after apply)
+          + skip_nodes_with_local_storage    = (known after apply)
+          + skip_nodes_with_system_pods      = (known after apply)
+        }
+
+      + azure_active_directory_role_based_access_control {
+          + admin_group_object_ids = (known after apply)
+          + azure_rbac_enabled     = (known after apply)
+          + client_app_id          = (known after apply)
+          + managed                = (known after apply)
+          + server_app_id          = (known after apply)
+          + server_app_secret      = (sensitive value)
+          + tenant_id              = (known after apply)
+        }
+
+      + default_node_pool {
+          + kubelet_disk_type    = (known after apply)
+          + max_pods             = (known after apply)
+          + name                 = "agentpool"
+          + node_count           = 1
+          + node_labels          = (known after apply)
+          + orchestrator_version = (known after apply)
+          + os_disk_size_gb      = 128
+          + os_disk_type         = "Managed"
+          + os_sku               = (known after apply)
+          + type                 = "VirtualMachineScaleSets"
+          + ultra_ssd_enabled    = false
+          + vm_size              = "Standard_D2_v2"
+          + vnet_subnet_id       = (known after apply)
+        }
+
+      + ingress_application_gateway {
+          + effective_gateway_id                 = (known after apply)
+          + gateway_id                           = (known after apply)
+          + gateway_name                         = (known after apply)
+          + ingress_application_gateway_identity = (known after apply)
+          + subnet_cidr                          = (known after apply)
+          + subnet_id                            = (known after apply)
+        }
+
+      + key_vault_secrets_provider {
+          + secret_identity          = (known after apply)
+          + secret_rotation_enabled  = (known after apply)
+          + secret_rotation_interval = (known after apply)
+        }
+
+      + kubelet_identity {
+          + client_id                 = (known after apply)
+          + object_id                 = (known after apply)
+          + user_assigned_identity_id = (known after apply)
+        }
+
+      + network_profile {
+          + dns_service_ip     = "10.0.0.10"
+          + docker_bridge_cidr = "172.17.0.1/16"
+          + load_balancer_sku  = "standard"
+          + network_mode       = (known after apply)
+          + network_plugin     = "azure"
+          + network_policy     = (known after apply)
+          + outbound_type      = "loadBalancer"
+          + pod_cidr           = (known after apply)
+          + service_cidr       = "10.0.0.0/16"
+
+          + load_balancer_profile {
+              + effective_outbound_ips    = (known after apply)
+              + idle_timeout_in_minutes   = (known after apply)
+              + managed_outbound_ip_count = (known after apply)
+              + outbound_ip_address_ids   = (known after apply)
+              + outbound_ip_prefix_ids    = (known after apply)
+              + outbound_ports_allocated  = (known after apply)
+            }
+
+          + nat_gateway_profile {
+              + effective_outbound_ips    = (known after apply)
+              + idle_timeout_in_minutes   = (known after apply)
+              + managed_outbound_ip_count = (known after apply)
+            }
+        }
+
+      + oms_agent {
+          + log_analytics_workspace_id = (known after apply)
+          + oms_agent_identity         = (known after apply)
+        }
+
+      + role_based_access_control {
+          + enabled = (known after apply)
+
+          + azure_active_directory {
+              + admin_group_object_ids = (known after apply)
+              + azure_rbac_enabled     = (known after apply)
+              + client_app_id          = (known after apply)
+              + managed                = (known after apply)
+              + server_app_id          = (known after apply)
+              + server_app_secret      = (sensitive value)
+              + tenant_id              = (known after apply)
+            }
+        }
+
+      + service_principal {
+          + client_id     = "9900b4b3-2a1b-45ec-952d-ba7a06a5c78d"
+          + client_secret = (sensitive value)
+        }
+
+      + windows_profile {
+          + admin_password = (sensitive value)
+          + admin_username = (known after apply)
+          + license        = (known after apply)
+        }
+    }
+
+  # azurerm_log_analytics_solution.test will be created
+  + resource "azurerm_log_analytics_solution" "test" {
+      + id                    = (known after apply)
+      + location              = "northcentralus"
+      + resource_group_name   = (known after apply)
+      + solution_name         = "ContainerInsights"
+      + workspace_name        = (known after apply)
+      + workspace_resource_id = (known after apply)
+
+      + plan {
+          + name      = (known after apply)
+          + product   = "OMSGallery/ContainerInsights"
+          + publisher = "Microsoft"
+        }
+    }
+
+  # azurerm_log_analytics_workspace.test will be created
+  + resource "azurerm_log_analytics_workspace" "test" {
+      + daily_quota_gb                     = -1
+      + id                                 = (known after apply)
+      + internet_ingestion_enabled         = true
+      + internet_query_enabled             = true
+      + location                           = "northcentralus"
+      + name                               = (known after apply)
+      + portal_url                         = (known after apply)
+      + primary_shared_key                 = (sensitive value)
+      + reservation_capacity_in_gb_per_day = (known after apply)
+      + reservation_capcity_in_gb_per_day  = (known after apply)
+      + resource_group_name                = (known after apply)
+      + retention_in_days                  = (known after apply)
+      + secondary_shared_key               = (sensitive value)
+      + sku                                = "PerGB2018"
+      + workspace_id                       = (known after apply)
+    }
+
+  # azurerm_public_ip.test will be created
+  + resource "azurerm_public_ip" "test" {
+      + allocation_method       = "Static"
+      + availability_zone       = (known after apply)
+      + fqdn                    = (known after apply)
+      + id                      = (known after apply)
+      + idle_timeout_in_minutes = 4
+      + ip_address              = (known after apply)
+      + ip_version              = "IPv4"
+      + location                = "centralus"
+      + name                    = "publicIp1"
+      + resource_group_name     = (known after apply)
+      + sku                     = "Standard"
+      + sku_tier                = "Regional"
+      + tags                    = {
+          + "source" = "terraform"
+        }
+      + zones                   = (known after apply)
+    }
+
+  # azurerm_resource_group.rg will be created
+  + resource "azurerm_resource_group" "rg" {
+      + id       = (known after apply)
+      + location = "centralus"
+      + name     = (known after apply)
+    }
+
+  # azurerm_role_assignment.ra1 will be created
+  + resource "azurerm_role_assignment" "ra1" {
+      + id                               = (known after apply)
+      + name                             = (known after apply)
+      + principal_id                     = (known after apply)
+      + principal_type                   = (known after apply)
+      + role_definition_id               = (known after apply)
+      + role_definition_name             = "Network Contributor"
+      + scope                            = (known after apply)
+      + skip_service_principal_aad_check = (known after apply)
+    }
+
+  # azurerm_role_assignment.ra2 will be created
+  + resource "azurerm_role_assignment" "ra2" {
+      + id                               = (known after apply)
+      + name                             = (known after apply)
+      + principal_id                     = (known after apply)
+      + principal_type                   = (known after apply)
+      + role_definition_id               = (known after apply)
+      + role_definition_name             = "Managed Identity Operator"
+      + scope                            = (known after apply)
+      + skip_service_principal_aad_check = (known after apply)
+    }
+
+  # azurerm_role_assignment.ra3 will be created
+  + resource "azurerm_role_assignment" "ra3" {
+      + id                               = (known after apply)
+      + name                             = (known after apply)
+      + principal_id                     = (known after apply)
+      + principal_type                   = (known after apply)
+      + role_definition_id               = (known after apply)
+      + role_definition_name             = "Contributor"
+      + scope                            = (known after apply)
+      + skip_service_principal_aad_check = (known after apply)
+    }
+
+  # azurerm_role_assignment.ra4 will be created
+  + resource "azurerm_role_assignment" "ra4" {
+      + id                               = (known after apply)
+      + name                             = (known after apply)
+      + principal_id                     = (known after apply)
+      + principal_type                   = (known after apply)
+      + role_definition_id               = (known after apply)
+      + role_definition_name             = "Reader"
+      + scope                            = (known after apply)
+      + skip_service_principal_aad_check = (known after apply)
+    }
+
+  # azurerm_user_assigned_identity.testIdentity will be created
+  + resource "azurerm_user_assigned_identity" "testIdentity" {
+      + client_id           = (known after apply)
+      + id                  = (known after apply)
+      + location            = "centralus"
+      + name                = "identity1"
+      + principal_id        = (known after apply)
+      + resource_group_name = (known after apply)
+      + tags                = {
+          + "source" = "terraform"
+        }
+      + tenant_id           = (known after apply)
+    }
+
+  # azurerm_virtual_network.test will be created
+  + resource "azurerm_virtual_network" "test" {
+      + address_space         = [
+          + "192.168.0.0/16",
+        ]
+      + dns_servers           = (known after apply)
+      + guid                  = (known after apply)
+      + id                    = (known after apply)
+      + location              = "centralus"
+      + name                  = "aks-vnet-clustervnet"
+      + resource_group_name   = (known after apply)
+      + subnet                = [
+          + {
+              + address_prefix = "192.168.0.0/24"
+              + id             = (known after apply)
+              + name           = "kubesubnet"
+              + security_group = ""
+            },
+          + {
+              + address_prefix = "192.168.1.0/24"
+              + id             = (known after apply)
+              + name           = "appgwsubnet"
+              + security_group = ""
+            },
+        ]
+      + tags                  = {
+          + "source" = "terraform"
+        }
+      + vm_protection_enabled = false
+    }
+
+  # random_id.log_analytics_workspace_name_suffix will be created
+  + resource "random_id" "log_analytics_workspace_name_suffix" {
+      + b64_std     = (known after apply)
+      + b64_url     = (known after apply)
+      + byte_length = 8
+      + dec         = (known after apply)
+      + hex         = (known after apply)
+      + id          = (known after apply)
+    }
+
+  # random_pet.rg-name will be created
+  + resource "random_pet" "rg-name" {
+      + id        = (known after apply)
+      + length    = 2
+      + prefix    = "agic"
+      + separator = "-"
+    }
+
+Plan: 14 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + application_ip_address = (known after apply)
+  + client_certificate     = (known after apply)
+  + client_key             = (known after apply)
+  + cluster_ca_certificate = (known after apply)
+  + cluster_password       = (known after apply)
+  + cluster_username       = (known after apply)
+  + host                   = (known after apply)
+  + identity_client_id     = (known after apply)
+  + identity_resource_id   = (known after apply)
+  + kube_config            = (sensitive value)
+  + resource_group_name    = (known after apply)
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+random_pet.rg-name: Creating...
+random_id.log_analytics_workspace_name_suffix: Creating...
+random_pet.rg-name: Creation complete after 0s [id=agic-amusing-imp]
+random_id.log_analytics_workspace_name_suffix: Creation complete after 0s [id=p8grxNVuTg8]
+azurerm_resource_group.rg: Creating...
+azurerm_resource_group.rg: Creation complete after 4s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp]
+azurerm_user_assigned_identity.testIdentity: Creating...
+azurerm_public_ip.test: Creating...
+azurerm_log_analytics_workspace.test: Creating...
+azurerm_virtual_network.test: Creating...
+azurerm_public_ip.test: Still creating... [10s elapsed]
+azurerm_log_analytics_workspace.test: Still creating... [10s elapsed]
+azurerm_user_assigned_identity.testIdentity: Still creating... [10s elapsed]
+azurerm_virtual_network.test: Still creating... [10s elapsed]
+azurerm_user_assigned_identity.testIdentity: Creation complete after 12s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1]
+azurerm_role_assignment.ra2: Creating...
+azurerm_public_ip.test: Creation complete after 13s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.Network/publicIPAddresses/publicIp1]
+azurerm_virtual_network.test: Creation complete after 17s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.Network/virtualNetworks/aks-vnet-clustervnet]
+data.azurerm_subnet.appgwsubnet: Reading...
+data.azurerm_subnet.kubesubnet: Reading...
+data.azurerm_subnet.appgwsubnet: Read complete after 1s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.Network/virtualNetworks/aks-vnet-clustervnet/subnets/appgwsubnet]
+azurerm_application_gateway.network: Creating...
+data.azurerm_subnet.kubesubnet: Read complete after 1s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.Network/virtualNetworks/aks-vnet-clustervnet/subnets/kubesubnet]
+azurerm_role_assignment.ra1: Creating...
+azurerm_log_analytics_workspace.test: Still creating... [20s elapsed]
+azurerm_log_analytics_workspace.test: Creation complete after 21s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.OperationalInsights/workspaces/marcos-telemetry-loganalyticsworkspace-12089961324070456847]
+azurerm_log_analytics_solution.test: Creating...
+azurerm_role_assignment.ra2: Still creating... [10s elapsed]
+azurerm_application_gateway.network: Still creating... [10s elapsed]
+azurerm_role_assignment.ra1: Still creating... [10s elapsed]
+azurerm_log_analytics_solution.test: Still creating... [10s elapsed]
+azurerm_role_assignment.ra2: Still creating... [20s elapsed]
+azurerm_log_analytics_solution.test: Creation complete after 13s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.OperationsManagement/solutions/ContainerInsights(marcos-telemetry-loganalyticsworkspace-12089961324070456847)]
+azurerm_application_gateway.network: Still creating... [20s elapsed]
+azurerm_role_assignment.ra1: Still creating... [20s elapsed]
+azurerm_role_assignment.ra2: Still creating... [30s elapsed]
+azurerm_application_gateway.network: Still creating... [30s elapsed]
+azurerm_role_assignment.ra1: Still creating... [30s elapsed]
+azurerm_role_assignment.ra2: Still creating... [40s elapsed]
+azurerm_application_gateway.network: Still creating... [40s elapsed]
+azurerm_role_assignment.ra1: Still creating... [40s elapsed]
+azurerm_role_assignment.ra2: Creation complete after 48s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1/providers/Microsoft.Authorization/roleAssignments/9e7a661e-3ba4-41de-2c61-f06f5920e372]
+azurerm_role_assignment.ra1: Creation complete after 43s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.Network/virtualNetworks/aks-vnet-clustervnet/subnets/kubesubnet/providers/Microsoft.Authorization/roleAssignments/ad36f344-f1bd-3768-c8df-069d269f1820]
+azurerm_application_gateway.network: Still creating... [50s elapsed]
+azurerm_application_gateway.network: Still creating... [1m0s elapsed]
+azurerm_application_gateway.network: Still creating... [1m10s elapsed]
+azurerm_application_gateway.network: Still creating... [1m20s elapsed]
+azurerm_application_gateway.network: Still creating... [1m30s elapsed]
+azurerm_application_gateway.network: Still creating... [1m40s elapsed]
+azurerm_application_gateway.network: Still creating... [1m50s elapsed]
+azurerm_application_gateway.network: Still creating... [2m0s elapsed]
+azurerm_application_gateway.network: Still creating... [2m10s elapsed]
+azurerm_application_gateway.network: Still creating... [2m20s elapsed]
+azurerm_application_gateway.network: Still creating... [2m30s elapsed]
+azurerm_application_gateway.network: Still creating... [2m40s elapsed]
+azurerm_application_gateway.network: Still creating... [2m50s elapsed]
+azurerm_application_gateway.network: Still creating... [3m0s elapsed]
+azurerm_application_gateway.network: Still creating... [3m10s elapsed]
+azurerm_application_gateway.network: Still creating... [3m20s elapsed]
+azurerm_application_gateway.network: Still creating... [3m30s elapsed]
+azurerm_application_gateway.network: Still creating... [3m40s elapsed]
+azurerm_application_gateway.network: Still creating... [3m50s elapsed]
+azurerm_application_gateway.network: Creation complete after 4m6s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.Network/applicationGateways/ApplicationGateway1]
+azurerm_role_assignment.ra4: Creating...
+azurerm_role_assignment.ra3: Creating...
+azurerm_kubernetes_cluster.k8s: Creating...
+azurerm_role_assignment.ra3: Still creating... [10s elapsed]
+azurerm_role_assignment.ra4: Still creating... [10s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [10s elapsed]
+azurerm_role_assignment.ra4: Still creating... [20s elapsed]
+azurerm_role_assignment.ra3: Still creating... [20s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [20s elapsed]
+azurerm_role_assignment.ra4: Creation complete after 27s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.Authorization/roleAssignments/aebc9f51-d760-101e-6b3e-67248ab46464]
+azurerm_role_assignment.ra3: Still creating... [30s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [30s elapsed]
+azurerm_role_assignment.ra3: Creation complete after 34s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.Network/applicationGateways/ApplicationGateway1/providers/Microsoft.Authorization/roleAssignments/9ca3bc6a-3d13-84fa-eaed-70c41e77ace5]
+azurerm_kubernetes_cluster.k8s: Still creating... [40s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [50s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [1m0s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [1m10s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [1m20s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [1m30s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [1m40s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [1m50s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [2m0s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [2m10s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [2m20s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [2m30s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [2m40s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [2m50s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [3m0s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [3m10s elapsed]
+azurerm_kubernetes_cluster.k8s: Still creating... [3m20s elapsed]
+azurerm_kubernetes_cluster.k8s: Creation complete after 3m27s [id=/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.ContainerService/managedClusters/marcos-agic-ingress]
+
+Apply complete! Resources: 14 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+application_ip_address = "52.154.254.14"
+client_certificate = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZIVENDQXdXZ0F3SUJBZ0lRSG1xY0ZycU4xYWhwd1h0T0Z5UWp5REFOQmdrcWhraUc5dzBCQVFzRkFEQU4KTVFzd0NRWURWUVFERXdKallUQWVGdzB5TWpBME1UVXdOalE0TlRKYUZ3MHlOREEwTVRVd05qVTROVEphTURBeApGekFWQmdOVkJBb1REbk41YzNSbGJUcHRZWE4wWlhKek1SVXdFd1lEVlFRREV3eHRZWE4wWlhKamJHbGxiblF3CmdnSWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUNEd0F3Z2dJS0FvSUNBUURPUHZZVUM2R28rSFB2L0FiSXNjNWYKMWo2UzdYbE9yaGUxdHVMV3FBa3JReXN0ODNuNmc4Y1REeGNwWFVlVEJHcWduTnJ4bTN4ZDZ4Q1duYUJYeXRrSgpBR09kYTlxT1NPQWxHalpUdk03OEdGZHppMTN2WnNrb3NiOWRXNjFpeFlZa3hHbVFhR0NIOFZFZnI4SWVMOUZrCjVUdTQyNDB2MzR5aGl4NmFxSE9VeDBxUXQ1cXRoTlM2dVFhYXpvSlFnczVrZ0NkcHdRbmwrOVRNS0l6YXlJM1oKMnJkNmtDODZ6QklQbmJEYXE1SEJGcFJPakRWMTUwajV0cmNnN2dlWmFGTXNFK1hCNWg0dERyaVAvazRRVktEagpSallNRGx0TWhHcUhWSHp0Nm5sL3JNaTZDMFZPWW9VaWg5eGpXM012cHhHcTlFL3V4R0xvTmlmWkdKZTlHVVM5CmhVMHRyT0U4QlFZcHRpZjFVTURaR2xOTlJWY05iL3dUUUxFcGNrUWNNaGY4ekFBMHh1aS9ZZ055SVRpL3pjeHUKKy9jQ0dOcE1XTk1OZG9ZNTQvcERId0hFcUQyL0xHY2RQeklpQURycE5hZC90cFVrM3QrcEVlbXBhcmdHM1ZkWgpDbkJuOXRPQTV1VmJ2K21hNGRpUXNFamt3NzZXNU5lUUdNTUQvL3lMZS9NUGxleWI5M1QxTjRHc3MzbUxrMzB4ClZmUVJNR3pQTlozQ1ZuVWJkc09KR09FS0tYcUN0NFIzWVFCazM0MGRPNC9uRUg0c1FRa2FNN0szWkRwazNPeU8KaHhqejhIR3pSby9HSFRsL1lUZ2w2SlNYdmxZZjJhekIrZUhGYTFSR0NXNjhrV21sNExQWEMzUmdjWGZiU2toMQp0NlF3eitzRldEY2xNNjEwWnVBQyt3SURBUUFCbzFZd1ZEQU9CZ05WSFE4QkFmOEVCQU1DQmFBd0V3WURWUjBsCkJBd3dDZ1lJS3dZQkJRVUhBd0l3REFZRFZSMFRBUUgvQkFJd0FEQWZCZ05WSFNNRUdEQVdnQlFadDZhN0E1b1AKZ3pSYTRxL20zMW92ZmVBZzZEQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FnRUFLYUVqb0FnbkV3NzhUMXVuMEk1MQoxRnI1RVIwSE1IenNZM3lPSzExci85dWJEWXVEU2k1UTFjR0tjMU85WHNDd252N010VnBnRUtBbVZxRmZJaCszCll6dVUyUkcxcGJTZjE0T2lpNkhRakNEMldLVllVRmlSUnBKRUtSdGFyODBsUzV6YkxTYmVydi9EQnQ5K0x4MTMKK1lUNUZYYTZyNnA2R3NocWlqVG1Qa25aK08xSlh2S212S3h5aFZDc2NvUEdZdG9WMmV1VktJY3ZSeFM5N2hrawo0dWtqb1VabWFBNzZvOGcvTmdUcitPRjc3b1I1Q3RiOGlwL1pzWG05U0NZN2NRNWdhNTJvMlJ1bTFnb0VtNXltCmliT3IzQ0xWY003L0VkUzJaYnNjM2FHYm5BY1JGUEtQL1ptVEsyN0RMTTZMbG0vL3lwOVF0d05JQUZLbVhFSW4KV0ZFczdLNVRObmtvOWczb1BXdTR0V21WeW51Wis0QjRsSFJPNFkxUnZRNjA1UTQyQzNYOXM5RFBvazZJRGFZSQpWTjE5eEpscFpXOVFTc3I0eFRIZU44emdtWjlzWktqRWpOSWZLRXNOMk1CWE9oY2IzVCtyS0RYUTNDYWhVZjlQCisxTURHTXA2WCtvcEhMQzh4cE5veVVPbnVHSVE0LzF4d3VCZmd4SXVDOHo3cFdVMTdUc04rSU1PWktSWkRESVUKS1ZTcU1uYk85MVVGMU1NbjBxRXBuM2tKVnJ6SFJESUFwZUhWTW9RZ2tqZjhCakRwNFdVdmMrb20rc1Bhd1g3Rgo4Z3FoanpnYWNVcFp1MHNnNVJCVWRLVXIrZXVSMFI2dmkvMWJLcWhoZkxaL09Td1BwcjgweTVSK2pxSjIyVFhDCjNPTG85WWtrSXpJQ280QXJZa29sZzJBPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+client_key = "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlKS2dJQkFBS0NBZ0VBemo3MkZBdWhxUGh6Ny93R3lMSE9YOVkra3UxNVRxNFh0YmJpMXFnSkswTXJMZk41CitvUEhFdzhYS1YxSGt3UnFvSnphOFp0OFhlc1FscDJnVjhyWkNRQmpuV3ZhamtqZ0pSbzJVN3pPL0JoWGM0dGQKNzJiSktMRy9YVnV0WXNXR0pNUnBrR2hnaC9GUkg2L0NIaS9SWk9VN3VOdU5MOStNb1lzZW1xaHpsTWRLa0xlYQpyWVRVdXJrR21zNkNVSUxPWklBbmFjRUo1ZnZVekNpTTJzaU4yZHEzZXBBdk9zd1NENTJ3MnF1UndSYVVUb3cxCmRlZEkrYmEzSU80SG1XaFRMQlBsd2VZZUxRNjRqLzVPRUZTZzQwWTJEQTViVElScWgxUjg3ZXA1ZjZ6SXVndEYKVG1LRklvZmNZMXR6TDZjUnF2UlA3c1JpNkRZbjJSaVh2UmxFdllWTkxhemhQQVVHS2JZbjlWREEyUnBUVFVWWApEVy84RTBDeEtYSkVIRElYL013QU5NYm92MklEY2lFNHY4M01idnYzQWhqYVRGalREWGFHT2VQNlF4OEJ4S2c5CnZ5eG5IVDh5SWdBNjZUV25mN2FWSk43ZnFSSHBxV3E0QnQxWFdRcHdaL2JUZ09ibFc3L3BtdUhZa0xCSTVNTysKbHVUWGtCakRBLy84aTN2ekQ1WHNtL2QwOVRlQnJMTjVpNU45TVZYMEVUQnN6eldkd2xaMUczYkRpUmpoQ2lsNgpncmVFZDJFQVpOK05IVHVQNXhCK0xFRUpHak95dDJRNlpOenNqb2NZOC9CeHMwYVB4aDA1ZjJFNEplaVVsNzVXCkg5bXN3Zm5oeFd0VVJnbHV2SkZwcGVDejF3dDBZSEYzMjBwSWRiZWtNTS9yQlZnM0pUT3RkR2JnQXZzQ0F3RUEKQVFLQ0FnRUFoR2toblM3Mmc3KzIxenpyc2crTldqUDNDbWRSdVRURjNoRGpRMEt3V0VrUVFMa085OG1BbG5qYQp1dUM3SWVUMCs5YVlMZ05QN2hBTEgxZGxhTmUvVFNzbHlSeEVQWk1GN0d3T3N1WUYwUTFqbjdlN0FBYnlZS0QxCkpkL0V5aVBjQW1EakVTWWh5MFVmZXdOZzBmYUxMWWFLT0Iwa1lMYloxNkMwYmtCMXErL2lyRlJrQnNDL3ZuMHAKZzF2UGlCYmlvTjB4OEpCUlpZaXZUcjg5NXZ4WkxhTmdwbHhKSml0NzhQQ2hhVkk3Q2tjUHdmbjhISXozYWZKbgpVY25mc1Jxc1F5RW5JYncyWldFTkZzMENtek5wODEvUk5SNUdlVEtPSGdJZERyVzVlVUdad08rWmVFQ0NEdkJBCmlyMWNqeHhvbUdPdnFiQUZlK1hBNFgwTGRnangrcjdiRFpGSmdWSVBsc1lWaXlPRmV4OVRoYmRrb1MyeWd3Sk0KRTlaNzc3U2UvamVmek81L3B6V3RJcXNuL3NKSys3bXRKNFRSaTVoVWZHZE5vRktTNUdaakhDNTZpeDQ1S1hscwovVVJ6bkxSd2ljV3lxUlh1MVJQZGh4QXptMlJMaWlDVGhKeXc3cysyRks3eGpLdUlUTFF5TzdxalBmalM3Y2RkCkNJOFRnS05QZDRPVkxDbjNvSE1LTG5zNVlXTWkyZU9qNjNYSEVMZ0xFbkhaS3hWai96aTc3WmxPek4xL01LVzUKWTEwektiYm45VFgrVm9JQmFLVE5CK0FMN2FxQ2huNjJYY3YzSzhrZ0NWSCtpSHVIQmxFQWJiQUpvZzRrSStkSApEUmt1SmxkWHg1MkpsY3lWMjMvd1BFZWJMYjJCaUx0M1VzY0dHaDRNd05kWitIdExrNWtDZ2dFQkFQaEp4cTB5CnJCWkRvcklmZ2ErbWFXTjdqN1JzRW1XdTIvK3VDNWVWV085NUtycS9uUkNMdWJKZDFtazUwQzJaVi9sQjdUMWEKektZYmFiclpjdWlPNFlXQjJQMThZUUFtOTNma2M0bmxtT3Bka3UyME1qNTIvazNCdTlkN2JKSE0xc3lBci9pVQpkY2hvaFc5WVg3RjkxbldPYlJhZzg3MnFTR1o0eC80NGJvZ2dONUhuMjJXNGkrcmVXV3JjanlDMDR4cG1pZEdECjRSL21UMWNnN2V1OTNzQVZ0TVJhejRZb3EvdUxrVk4rbXlVaDhVS1RlNzNWdTMwaDRtdGJ1WkRxVklPWXZZRDEKRldjQk1aekNDU09yRzVQQzhXZVVOeW1ZZDNwdGJSOXNKN2Jpc0F6MnpYaFRVbXdDd1V3VCs2QTFRNHJjSDc4eAp1SGttV3hQRnIwKzBCR2NDZ2dFQkFOU201Sml0Mkw4NnMydm5TK3dianQ0TmR4cDlVeGRmYkF5WjBkT2FFWkdkCm1zeWRTT0FVa2o3TVJibjh5M3VjRm5vckxZOWs4YkNKNUk2cktzMFY3U2U1a3BnamlxdFcyYWRDbytXblY1dHgKWE5DWFQxWXZvMTZWK2YwcFhjeDdROHdjc3doNkU3bDgybDl5d2NaVUM1MzNBM2NxY29JUTJ6WFYxQ0pCbVZTUQpnMWJVSzRnZUxDalcvQXl0U2R6ZnpCVzd5YVRCV3E4a05GUXRnWXZ0bjFGSkJjUnpqRFBNVGsxWUFRK0srSG9YCjgyVXUzNy9lVXlJZ2xWS3pYOTNEeUZ5Nm9DZlJzN3VNKzdlSmhnTEJLb2VZTnhWUysvSTd4Q0pWV3R0THJoR2cKUmdzTzNXaDFUVUFNYmw1Y2hZdG02TkROdjN2amZRdm04Ui8waGhSQjBFMENnZ0VCQVBSaTBiN0t3SjNOaHdlaQpnV2pkK0ovbUVDVzd0a1FGNEIrRE5YL0hqZGx3djBFL3Q1NkFtWkJhVXVBUityblhWTU5RUSs1L1FDNURqMGRPCkg0K09pNlo0ajVlNTVGUmRCbm9wRUJ4c05KNkM2a3MwY2J3UUxmRmxQcm96ajBMWGg1bVZGU0F0S04zUkczM2sKVTVTRjB5QzB4dVZlR1d2WGZ4bjF5b3lOQ1NiTjUwU2pIYzI2MzJXWDVCV044UWQxWkpBbzI0Q3hPVmJIdjlKMwo1QmVGTlFxR2t2NHVrRk55Rnc0cWF5bnUxVkN3WHlOenZYbTJOYXhPUE9vRlI5cSsrOTduNmFkVUZQUGxOZXNoCkJoUG9xT1ZCSFpJaFRrYVAveEl2UVJpTHdXOS9JMkF2VVVFZGFtUk1OZXpuUW1hSDV1cDREbnVIdWhidFRQcGkKTzFQTlVnTUNnZ0VBUXp0QXFzVEw4aW1zOEVDQVVIV21CYTVjS1pQVjRWM1oyMklHWk5BaEhkaW1TR3F4ejZheApWZ2xmUWg0YWQwb3lFUTMxcVpCUW1XLy9RdHY2L0R3aWJwek5MQ3lRZXZ0S2RRY3Nxajd1QThjamdROVZsZm9aCnZKM09HNndvYTYzTkVZdEJUenpKWDZ1Sm53TzVIK3NTZ1M3SGViV0IzbjFWMFA5NXdocmJUMUVoTlNKL1lObXAKUElBNzBBWTVoQXQ5aXFHRWJ3SnltVXpvL25Ra3NRaS9oZ09BUDB3STE1ZVFhZ09ZMGtFdHJleEVsNGpxVk04RgptWlNUb1VIMDNUZzQ4SmhRYWtaeWZLbG1LL0RlM2FBVXdpbnR3R0FzSjdtZG1QMURiSEhRNXVHMVEybS90bmJmCnBaQklsS3pMeS9jTlJIYklRM0w0NWZwdDRaeDloNG9IUVFLQ0FRRUE5K0c3ZGZaODFGUHFJTVRsSEFnUFVyeVUKVnYyTklVOU41THU0dzF1Y1BoNVd5eEZwOFVNQUtTSzlVYVQ4c0MwN3lJWE9GY3BRQ0xDWnRaaW9HbUF0VUVsYQpoekMyVUFYVktiRUFnbkRQdWNzYTZQbkljNnBucjZueVNlQlZWdzVEZmpZdjBpSGE1TnJGeFVOMHNqTmZLdXk1Cm10VU4wd1VsT0dVcVNHK3kwUVo2aGFpc3lNU2o4TGROUXhTc2c4aUFHYjVnYS9QUG52dlRKVXZJakVCOVY3Y3kKbjIxSFRIcFNaa09zYlE5VC9La2s0SjgxdVdnRlh3b2d3SFNhNytFdlZnelZtdDEzODFYdGhZTEZKRkpzN3JjTQpkYXFkVzdNM3FPVnRsamtQRWFZdURydVk5cUtlSFk5V0pyaHJkd1N5dXFNSy91bVRkeHJzU0tMNmpabkVOZz09Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=="
+cluster_ca_certificate = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUU2VENDQXRHZ0F3SUJBZ0lSQU1oZm5ZczRGV0ZHUG15ckJVb0VtN2N3RFFZSktvWklodmNOQVFFTEJRQXcKRFRFTE1Ba0dBMVVFQXhNQ1kyRXdJQmNOTWpJd05ERTFNRFkwT0RVeVdoZ1BNakExTWpBME1UVXdOalU0TlRKYQpNQTB4Q3pBSkJnTlZCQU1UQW1OaE1JSUNJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBZzhBTUlJQ0NnS0NBZ0VBCjNhZmEwam1zZStsb2VScVhTK3lNUmRkOWVvVXA1K3RYMkRnOW90Ylg1N3RvZktsbkpVU1IyVjBoTU9DcURaOXgKTkJ3VjdVWWY2ZVgxaEpnUVVFWXZrbXEzM1B5YXBWOWpUaUVDeU8rRTFva3grR2tqdjhkcTFFVGFoNHFlQjQyTgpNcHI4WnhlOXpWMWppRXVzZi9wWnVhR3ZONDg2Z3Fhb3FHcGo0UWUxWGR4Y1VWTGgrREZCVHZORWtnR0YyQ3JiCmtUZDB6SnJkcGMxSmxUMjhqczJtR2RsS0FaQSs3M3ExMVV2ZTR5Y1hSWGFiZnZlWElmNFpZdXpHQ2U0WmMzejAKUmtUbmpvQWpMTEg2UEQ2RTRYckF6a2hRWWFjclR3dGovVTlPU09zZGYrbytiVENkNlZrdkRMbWhVNU5mZHhBcQpMcE5DVGg0UGFPV3JMcnJMa2l2TGlOam5XSlFubkhIMVZMbWYrb3RzblNXdy9CdmtJWWVDS2V0VmFoNVF2ZWNFCkhoS2VOY0F0MTlqYmYzL3NHTmhYbm1vMkMvWENBZERncWxQTVA3b3RHbUlWaExZS09uaUVUYk53ZzFldmxlUEQKK09KRFYzalcvQ2NJZWdJUU5xVXVMVHhYNnVuZ1YxU0IzKzAyWFdFeXAwakJzc1lnVmMra2psdkFxbkxDTUhkWApHNHViS0VpN3c1Y2N3SVhaWUdDaGthQlhIaGFmbGJNeGRlby9hbUM2NXpXOFZoZEVnd1VZSkJRYlF6ckpWUjVCCkw1NE1YVmR3cXE1MzJGOFZHUzdTUEVqVUVFM2w0NUE2ZHlXNStCMzdncWlZRGdldEJCVnZyNjRPelFpRjRYdEwKY0tzWFhDMW5NcEVKUVRRZUtjc09jMDdIRzE0dmhrOXBZbEE3OVZ6cjJpMENBd0VBQWFOQ01FQXdEZ1lEVlIwUApBUUgvQkFRREFnS2tNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdIUVlEVlIwT0JCWUVGQm0zcHJzRG1nK0RORnJpCnIrYmZXaTk5NENEb01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQ0FRQ3pXeXdPaVpxS2dlLzdwQU9CZ1FNK1k5UXcKbiszQXIzRGRMS0lTZkIxcVFyd29hQUgwWHpXWXRHbWp3VFVFeFpHZ1JXVlZHRW4rbXhtTUIzMWQzKzJ0OVUzNQpxWWtGb25ha3NKWXUyQ0JTWmZSYXBlQ2diSTNUS3dlV1lHODZMYjloQzhBZGxKRTNmemlZK1Q3NHkzc0UrU3FWCnRYVlRpa1ExK1JDbmtXUzlxL0lBRXZxWHgrbHR1UWJqbDJiN0dETC9DV2lxSFErdWd3UEFTcTloTFFnMzBNeU8Ka1BsSUJ3SmJhcVByUWNBTHpBNDZJS3VEeWV1byt5QUFzSlBvR3FnbnVkd0J1ZXBZcTFucFJScFZZS1ZVSkQ3TwppQjBaTGM2c1M1bjJ4MUxaSm80VUlvc2lDLzRYemQxOFBIOHJIQ29Cc2pCOXZSMEdkY2ZMWHVOMjRpMjVkUkszCk5RNHV0YWdqNHlKWk9QbHp0ajhEelVpWVk1NlJIOUZQdVpHYTRlcVdsNnpkdFRaWHdWTXFCNlhaaXo5L0tGZ24KSWp5MGlTUUNVaFJVa3ljSFE5QzY5NTVneTBSeU1sZXU0bFRhSkw1WGJ4Zm1xSVB0Q2FyV05lbU5KVG9MRS9FQwpPU3J4RmprZnprRlZhRklSVURjRDgrL1NMdXdhZVJ2NHVxT0VGL3JGQVZkWTR3NkxFdmg4cmVMZHhZNG9PdER6CnFOZTlxcWlKMTBjYzUvcUorMzArbEhCakNkdnN4eDNNTmFCeXFZWGtmZkRON1RxUVEyZzFUOXZsbWlmTnd4TnQKYnRHOVpQOXZMTkhxN2tubE9aNm0rS3F4SmtDT0p6UG9xaWg5TzhsVWhvUVVnRmZWc09SclNGaEJmK0hYU0t3RwpmUWZDWXhhclZzVm4xd01maFE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+cluster_password = "57bbb450590c300a7742535fb4803f9b74b7c7eeaa8189dda4e2d76fcf06007e23175d20a8f0b4c292b7638f36ab1597ed77cb6884aa7bd0b8ab5efc625799de"
+cluster_username = "clusterUser_agic-amusing-imp_marcos-agic-ingress"
+host = "https://telemetry-f64c82ee.hcp.centralus.azmk8s.io:443"
+identity_client_id = "fe7dd8bb-28a6-46aa-a0eb-d370f97bc5dc"
+identity_resource_id = "/subscriptions/ffed056e-0f97-4b1f-8c93-963008f53d3b/resourceGroups/agic-amusing-imp/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity1"
+kube_config = <sensitive>
+resource_group_name = "agic-amusing-imp"
+PS D:\Reposcripts\Otel_Aggregator_Terraform\terraform\aksbasecode\AGIC>
+PS D:\Reposcripts\Otel_Aggregator_Terraform\terraform\aksbasecode\AGIC>
+PS D:\Reposcripts\Otel_Aggregator_Terraform\terraform\aksbasecode\AGIC>

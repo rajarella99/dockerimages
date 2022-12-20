@@ -1,0 +1,49 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger:
+- upstream
+pool:
+  vmImage: ubuntu-latest
+variables:
+  major: 1
+  minor: 1
+  buildNumber: '$[counter(0, 0)]'
+steps:
+- task: PowerShell@2
+  displayName: 'Version Generation'
+  inputs:
+      targetType: 'inline'
+      script: |
+        [String]$datePart = $(Get-Date -Format yyyyMMdd)
+        Write-Host "##vso[task.setvariable variable=versionNumber]$(major).$(minor).$(buildNumber).$($datePart)"
+- task: CmdLine@2
+  displayName: 'Install Octopus Cli'
+  inputs:
+    script: 'dotnet tool install --global Octopus.DotNet.Cli --version 7.4.3539'
+
+- task: ArchiveFiles@2
+  displayName : 'Compressing Artifacts'
+  inputs:
+    rootFolderOrFile: ReplaceOtelConfig
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/AlwaysOn-OTELAgentConfig-$(versionNumber).zip'
+    replaceExistingArchive: true
+
+- task: OctopusPush@4
+  inputs:
+    OctoConnectedServiceName: 'BuildID-Axcess Resiliency'
+    Space: 'Spaces-62'
+    Package: '$(Build.ArtifactStagingDirectory)/AlwaysOn-OTELAgentConfig-$(versionNumber).zip'
+    Replace: 'false'
+
+- task: OctopusCreateRelease@4
+  displayName: 'Create Release in Octopus'
+  inputs:
+    OctoConnectedServiceName: 'BuildID-Axcess Resiliency'
+    Space: 'Spaces-62'
+    ProjectName : "OTEL_Aggregator"
+    DeploymentProgress: true
+      ##AdditionalArguments: '--version $(Build.BuildNumber) --packageVersion $(versionNumber)'

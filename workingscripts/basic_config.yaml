@@ -1,0 +1,32 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:        
+      http:
+        #endpoint: "0.0.0.0:4319"
+  
+
+exporters:
+  otlphttp:
+    endpoint: https://marcos-appsvc-mdbh-dev-1.azurewebsites.net
+      
+      
+      # site: datadoghq.eu
+      
+    # traces:
+      # sample_rate: 1
+      # endpoint: https://trace.agent.datadoghq.com
+
+    
+
+      
+
+
+service:
+  #extensions: [health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      #receivers: [otlp, zipkin]
+      #processors: [batch]
+      exporters: [otlphttp]
